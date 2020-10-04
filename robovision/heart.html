@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="shortcut icon" href="images/logo1.png" type="image/x-icon">
+        <title>Robo Vission</title>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+        <link rel="stylesheet" href="style1.css">
+        <link>
+    </head>
+    <body>
+        <br><br>
+        <h1 align="center"><font color="#5c8a8a">Detecting Arrythmia Using ECG Reports</font></h1>
+        <center>
+            <br><br>
+            <button onclick="init();changeText('button1', 'Analysing....', 'Analyse Report');" class="button" id="button1">Analyse Report</button>
+        </center>
+        <center>
+            <br><br>
+            <!--<h2 id="given"></h2>
+            <div class="gif">
+                <img src="images/pht.gif" id="blah" class="demo">
+            </div>-->
+            <br><br>
+            <!--<h2 id="demo" class="under"></h2>
+            <table align="center">
+                <td height="50%" width="100%">
+                    <h3><font color="#5c8a8a"><div id="status" class="status height" align="center"></div></font></h3>
+                    <h3><font color="#5c8a8a"><div id="status1" class="status height" align="center"> </div></font></h3><br>
+                    <h3><font color="#5c8a8a"><div id="result"></div></font></h3>
+                </td>
+            </table>--> 
+            <div id="webcam-container"></div>
+            <div id="label-container"></div>
+            <script type="text/javascript">
+                const URL = "https://teachablemachine.withgoogle.com/models/jcc2Qq8M0/";
+                let model, webcam, labelContainer, maxPredictions;
+                async function init() {
+                    const modelURL = URL + "model.json";
+                    const metadataURL = URL + "metadata.json";
+                    model = await tmImage.load(modelURL, metadataURL);
+                    maxPredictions = model.getTotalClasses();
+                    const flip = true;
+                    webcam = new tmImage.Webcam(200, 200, flip); 
+                    await webcam.setup();
+                    await webcam.play();
+                    window.requestAnimationFrame(loop);
+                    document.getElementById("webcam-container").appendChild(webcam.canvas);
+                    labelContainer = document.getElementById("label-container");
+                    for (let i = 0; i < maxPredictions; i++) { 
+                        labelContainer.appendChild(document.createElement("div"));
+                    }
+                }
+                async function loop() {
+                    webcam.update();
+                    await predict();
+                    window.requestAnimationFrame(loop);
+                }
+                async function predict() {
+                    const prediction = await model.predict(webcam.canvas);
+                    for (let i = 0; i < maxPredictions; i++) {
+                        const classPrediction =
+                            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                        labelContainer.childNodes[i].innerHTML = classPrediction;
+                    }
+                }
+                function changeText(button, text, textToChangeBackTo) {
+                    buttonId = document.getElementById(button);
+                    buttonId.textContent = text;
+                    setTimeout(function() { back(buttonId, textToChangeBackTo); }, 10000);
+                    function back(button, textToChangeBackTo){ button.textContent = textToChangeBackTo; }
+                }
+            </script>
+            <br>
+            <br>
+            <br><br><br>
+            <br><br>
+            <br><br><br>
+            <br><br><br>
+            <a href="index.html"><button class="button">Home</button></a>
+           <br><br>
+        </center>
+    </body>
+</html>
